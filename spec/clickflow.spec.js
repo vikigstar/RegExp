@@ -1,5 +1,7 @@
 import assert from 'assert'
 import cheerio from 'cheerio'
+import sinon from 'sinon'
+
 import {
   readFixture
 } from './test-utils'
@@ -12,14 +14,14 @@ describe('clickflow', function () {
       const h1 = 'NEW H1 DUDE.'
       const url = 'https://www.good.com'
 
-      clickflow.getRules = (url) => {
+      sinon.stub(clickflow, "getRules").callsFake(url => {
         return [{
           name: 'h1',
           location: 'body',
           action: 'rewrite',
           value: h1,
         }]
-      }
+      })
 
       const actual = await clickflow.enhance(url, html)
       const $ = cheerio.load(actual)
