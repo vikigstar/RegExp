@@ -1,37 +1,32 @@
 {
   "$schema": "http://json.schemastore.org/install",
   "resources": {
-    "body": [
-      {
+    "body": [{
         "type": "style",
-        "src": "./source/app.css"
+        "src": "./src/app/app.css"
       },
       {
         "type": "script",
-        "src": "./source/app.js"
+        "src": "./src/app/app.js"
       }
     ]
   },
   "preview": {
-    "handlers": [
-      {
-        "options": ["_default"],
-        "execute": "INSTALL_SCOPE.setOptions(INSTALL_OPTIONS)"
-      }
-    ]
+    "handlers": [{
+      "options": ["_default"],
+      "execute": "INSTALL_SCOPE.setOptions(INSTALL_OPTIONS)"
+    }]
   },
-  "hooks": [
-    {
-      "endpoint": "https://d8a1ffb7.ngrok.io/api/v1/cloudflare",
-      "events": ["oauth-login"],
-      "block": true,
-      "authenticate": ["account"],
-      "failure": {
-        "action": "notify",
-        "message": "There was an error communicating with Clickflow."
-      }
+  "hooks": [{
+    "endpoint": "https://d8a1ffb7.ngrok.io/api/v1/cloudflare",
+    "events": ["oauth-login"],
+    "block": true,
+    "authenticate": ["account"],
+    "failure": {
+      "action": "notify",
+      "message": "There was an error communicating with Clickflow."
     }
-  ],
+  }],
   "options": {
     "properties": {
       "location": {

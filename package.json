@@ -4,7 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "lint": "standard --fix ./source/**/*.js || true"
+    "lint": "standard --fix ./source/**/*.js || true",
+    "build": "webpack worker.js --mode production --config webpack.config.prod.js",
+    "test": "mocha --require @babel/register \"spec/**/*.spec.js\"",
+    "preview": "yarn run build && ./scripts/open-preview < dist/main.js"
   },
   "private": true,
   "repository": {
@@ -17,9 +20,22 @@
     "url": "https://github.com/cloudflare-apps/example-app/issues"
   },
   "homepage": "https://github.com/cloudflare-apps/example-app#readme",
-  "dependencies": {},
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2"
+  },
   "devDependencies": {
-    "standard": "^9.0.2"
+    "@babel/core": "^7.0.0-0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-es2015": "^7.0.0-beta.53",
+    "@babel/register": "^7.0.0",
+    "babel-loader": "^8.0.2",
+    "eslint": "^5.5.0",
+    "mocha": "^5.2.0",
+    "mocha-webpack": "^1.1.0",
+    "standard": "^9.0.2",
+    "uglifyjs-webpack-plugin": "^1.3.0",
+    "webpack": "^4.18.0",
+    "webpack-cli": "^3.1.0"
   },
   "standard": {
     "globals": [
