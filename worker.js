@@ -1,6 +1,8 @@
 import clickflow from './src/worker/clickflow'
 
 addEventListener('fetch', event => {
+  event.passThroughOnException()
+
   event.respondWith(fetchAndModify(event.request))
 })
 
