@@ -1,40 +1,35 @@
 import htmlExtractor from './html-extractor'
 
-const mockApiCall = {
-  experiments: [{
-    rules: [{
-      name: 'page_title',
-      location: 'header',
-      action: 'rewrite',
-      value: 'OLD {{page_title}} NEW TITLE',
-    }, {
-      name: 'h1',
-      location: 'body',
-      action: 'rewrite',
-      value: 'NEW H1 TITLE',
-    }]
-  }]
-}
+const clickflowHost = 'http://localhost:5000'
+const rulesUrl = 'api/v1/cdn/webpage_opportunities/page_rules'
+
+// const mockApiCall = [{
+//   name: 'page_title',
+//   location: 'header',
+//   action: 'rewrite',
+//   value: 'OLD {{page_title}} NEW TITLE',
+// }, {
+//   name: 'h1',
+//   location: 'body',
+//   action: 'rewrite',
+//   value: 'NEW H1 TITLE',
+// }]
 
 export default {
-  getRules: (url) => {
-    // TODO: ADD API CALL TO CLICKFLOW HERE
-    // GET: "api/v1/cdn/webpage_opportunities/page_rules"
-    // PARAMS: { url: url }
-    // RESPONSE:
-    // {
-    //   experiments: [{ rules: [] }]
-    // }
-    return mockApiCall[0].rules
+  async getRules(siteId, url) {
+    const response = await fetch(`${clickflowHost}/${rulesUrl}?website_id=${siteId}&url=${url}`)
+    const responseBody = await response.json()
+    const rulesArr = responseBody.experiments
+    let rules = []
+
+    rulesArr.forEach(_rules => {
+      rules = [...rules, ..._rules.rules]
+    })
+    return rules
   },
 
-  async enhance(url, html) {
-    const rules = this.getRules(url)
-
-    if (!rules.length) {
-      return html
-    }
-
-    return htmlExtractor.replace(html, rules)
+  async enhance(siteId, url, responseBody) {
+    const rules = await this.getRules(siteId, url)
+    return htmlExtractor.replace(responseBody, rules)
   }
 }
