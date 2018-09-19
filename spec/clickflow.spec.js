@@ -14,7 +14,7 @@ describe('clickflow', function () {
       const h1 = 'NEW H1 DUDE.'
       const url = 'https://www.good.com'
 
-      sinon.stub(clickflow, "getRules").callsFake(url => {
+      sinon.stub(clickflow, 'getRules').callsFake(url => {
         return [{
           name: 'h1',
           location: 'body',
