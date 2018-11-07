@@ -1,25 +1,47 @@
 import clickflow from './src/worker/clickflow'
 
-/*
- * Get the website id by connecting with the installed cloudflare app
- * implementation: Todo
- */
+// HARD CODED FOR TESTING PURPOSES
+// const websiteId = 634 // clickflow.com
+const websiteId = 108 // amishtables.com
+const token = 'yTtAVzzqkzJ5_xC4f6_1RWyThKxg4KMncpKVyaK2tDV5JY2wTQ'
+
 function getWebsiteId() {
-  return 1
+  return websiteId
+}
+
+function getAuthToken() {
+  return token
 }
 
 addEventListener('fetch', event => {
-  event.passThroughOnException()
-
+  // event.passThroughOnException()
   event.respondWith(fetchAndModify(event.request))
 })
 
 async function fetchAndModify(request) {
-  const response = await fetch(request)
-  const responseBody = await response.text()
-  const html = await clickflow.enhance(getWebsiteId(), request.url, responseBody)
+  try {
+    // console.log(INSTALL_OPTIONS, INSTALL_PRODUCT, INSTALL_ID)
 
-  return new Response(html, {
-    headers: response.headers
-  })
+    const defaultResponse = await fetch(request)
+    const response = new Response(defaultResponse.body, defaultResponse)
+    const contentType = response.headers.get("content-type") || ''
+    const isHtml = contentType.indexOf("text/html") !== -1
+
+    response.headers.set('X-Clickflow', 'true')
+
+    if (!isHtml) {
+      return response
+    }
+
+    console.log('[INFO] fetching info for ', request.url);
+
+    const responseBody = await response.text()
+    const html = await clickflow.enhance(getWebsiteId(), getAuthToken(), request.url, responseBody)
+
+    return new Response(html, {
+      headers: response.headers
+    })
+  } catch (e) {
+    return new Response(e.stack)
+  }
 }

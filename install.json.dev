@@ -18,7 +18,7 @@
     }]
   },
   "hooks": [{
-    "endpoint": "https://api.clickflow.com/api/v1/authorizations/cloudflare/install",
+    "endpoint": "https://clickflow-api.ngrok.io/api/v1/cloudflare",
     "events": ["oauth-login"],
     "block": true,
     "authenticate": ["account"],
@@ -26,9 +26,6 @@
       "action": "notify",
       "message": "There was an error communicating with Clickflow."
     }
-  }],
-  "workers": [{
-    "src": "./dist/main.js"
   }],
   "options": {
     "properties": {
