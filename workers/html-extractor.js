@@ -1,13 +1,11 @@
-import cheerio from 'cheerio'
+import cheerio from "cheerio"
 
 /**
  * Format double braced template string
  * @param {string} name
  * @returns {string}
  */
-const toMethodName = (str = '') => {
-  return str.replace(/_\w/g, m => m[1].toUpperCase())
-}
+const toMethodName = (str = "") => str.replace(/_\w/g, m => m[1].toUpperCase())
 
 export default {
   /**
@@ -34,13 +32,13 @@ export default {
   getVariables($) {
     const attrs = {
       page_title: this.getPageTitle($),
-      h1: this.getH1($)
+      h1: this.getH1($),
     }
 
-    $('meta').each(function (i, elem) {
-      const content = $(this).attr('content')
-      const name = $(this).attr('name') || $(this).attr('property')
-      attrs['meta_' + name] = content
+    $("meta").each(function(i, elem) {
+      const content = $(this).attr("content")
+      const name = $(this).attr("name") || $(this).attr("property")
+      attrs[`meta_${name}`] = content
     })
 
     return attrs
@@ -50,15 +48,15 @@ export default {
     const $ = cheerio.load(html)
     const variables = this.getVariables($)
 
-    $('meta').each(function (i, elem) {
-      const content = $(this).attr('content')
-      const name = $(this).attr('name') || $(this).attr('property')
-      variables['meta_' + name] = content
+    $("meta").each(function(i, elem) {
+      const content = $(this).attr("content")
+      const name = $(this).attr("name") || $(this).attr("property")
+      variables[`meta_${name}`] = content
     })
 
     rules.forEach(rule => {
       try {
-        console.log('[INFO] html-extractor.replace applying rule:', rule);
+        console.log("[INFO] html-extractor.replace applying rule:", rule)
         this.applyRule($, variables, rule)
       } catch (err) {
         // do nothing
@@ -95,7 +93,7 @@ export default {
   replaceTemplateString(value, variables) {
     // matches all variables within the string "{{test}} is the {{best}}"
     // returns ["{{test}}", "{{best}}"]
-    const variablesInString = value.match(new RegExp('{{(.*?)}}', 'ig'))
+    const variablesInString = value.match(new RegExp("{{(.*?)}}", "ig"))
 
     if (!variablesInString) {
       return value
@@ -117,9 +115,9 @@ export default {
    */
   replaceTemplateVariable(value, variable, variables) {
     // returns just the name without any curly braces
-    const variableName = variable.replace(/{{|}}/g, '')
+    const variableName = variable.replace(/{{|}}/g, "")
     const variableValue = variables[variableName]
-    const regexp = new RegExp('{{' + variableName + '}}', 'ig')
+    const regexp = new RegExp(`{{${variableName}}}`, "ig")
 
     if (!variableValue) {
       return value
@@ -136,49 +134,49 @@ export default {
    * @returns {string}
    */
   getValue($, name) {
-    const prefix = (name || '').split('_')[0]
+    const prefix = (name || "").split("_")[0]
 
     switch (name) {
-      case 'page_title':
+      case "page_title":
         return this.getPageTitle($)
-      case 'h1':
+      case "h1":
         return this.getH1($)
       default:
-        const value = (name || '').split('_')[1]
-        if (prefix === 'meta') {
+        const value = (name || "").split("_")[1]
+        if (prefix === "meta") {
           return this.getMetaByProperty($, value)
         }
     }
   },
 
   getH1($) {
-    return $('h1')
+    return $("h1")
       .first()
       .text()
   },
 
   getPageTitle($) {
-    return ($('title').text() || '').trim()
+    return ($("title").text() || "").trim()
   },
 
   getMetaByProperty($, property) {
-    return $('meta[name="' + property + '"]')
+    return $(`meta[name="${property}"]`)
       .first()
-      .attr('content')
+      .attr("content")
   },
 
   setMetaByProperty($, property, content) {
-    return $('meta[name="' + property + '"]')
+    return $(`meta[name="${property}"]`)
       .first()
-      .attr('content', content)
+      .attr("content", content)
   },
 
   setPageTitle($, value) {
-    $('title').text(value)
+    $("title").text(value)
   },
 
   setH1($, value) {
-    return $('h1')
+    return $("h1")
       .first()
       .text(value)
   },
@@ -209,7 +207,7 @@ export default {
   // if the rule still has template variables after it's been replaced, it's
   // broken and we shouldn't apply it to the template
   isInvalidValue(value) {
-    return (value || '').search('{{') !== -1
+    return (value || "").search("{{") !== -1
   },
 
   isInvalidValueRaise(value) {
@@ -219,7 +217,7 @@ export default {
   },
 
   applyRule($, variables, rule) {
-    const method = toMethodName(rule.name + '_' + rule.action + '_rule')
+    const method = toMethodName(`${rule.name}_${rule.action}_rule`)
 
     const func = this[method]
 
@@ -247,13 +245,13 @@ export default {
   metaDescriptionRewriteRule($, variables, rule) {
     const value = this.replaceTemplateString(rule.value, variables)
     this.isInvalidValueRaise(value)
-    this.setMetaByProperty($, 'description', value)
+    this.setMetaByProperty($, "description", value)
   },
 
   metaKeywordsRewriteRule($, variables, rule) {
     const value = this.replaceTemplateString(rule.value, variables)
     this.isInvalidValueRaise(value)
-    this.setMetaByProperty($, 'keywords', value)
+    this.setMetaByProperty($, "keywords", value)
   },
 
   // -------------------------------------------------------------

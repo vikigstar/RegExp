@@ -3,14 +3,17 @@
   "resources": {
     "body": [{
         "type": "style",
-        "src": "./src/app/app.css"
+        "src": "./build/styles.css"
       },
       {
         "type": "script",
-        "src": "./src/app/app.js"
+        "src": "./build/index.js"
       }
     ]
   },
+  "workers": [{
+    "src": "./build/worker.js"
+  }],
   "preview": {
     "handlers": [{
       "options": ["_default"],
@@ -26,9 +29,6 @@
       "action": "notify",
       "message": "There was an error communicating with Clickflow."
     }
-  }],
-  "workers": [{
-    "src": "./dist/main.js"
   }],
   "options": {
     "properties": {
