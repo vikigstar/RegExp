@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/cloudflare-apps/create-cloudflare-app#readme",
   "dependencies": {
-    "acorn": "^6.0.4",
+    "acorn": "^6.4.1",
     "cheerio": "^1.0.0-rc.2",
     "domhandler": "^2.4.2",
     "fast-html-parser": "^1.0.1",
